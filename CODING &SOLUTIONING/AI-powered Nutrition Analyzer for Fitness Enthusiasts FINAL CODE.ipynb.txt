@@ -1,0 +1,646 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "7449059c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting package metadata (current_repodata.json): ...working... done\n",
+      "Solving environment: ...working... done\n",
+      "\n",
+      "# All requested packages already installed.\n",
+      "\n",
+      "Retrieving notices: ...working... done\n"
+     ]
+    }
+   ],
+   "source": [
+    "!conda install --yes keras\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "deffe866",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting package metadata (current_repodata.json): ...working... done\n",
+      "Solving environment: ...working... done\n",
+      "\n",
+      "# All requested packages already installed.\n",
+      "\n",
+      "Retrieving notices: ...working... done\n"
+     ]
+    }
+   ],
+   "source": [
+    "!conda install --yes tensorflow\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "63d08029",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.preprocessing.image import ImageDataGenerator\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "id": "e9f2d7dd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train_datagen=ImageDataGenerator(rescale=1./255,shear_range=0.2,zoom_range=0.2,horizontal_flip=True)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "id": "a270ac7d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test_datagen=ImageDataGenerator(rescale=1./255)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "id": "289e2b30",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Found 2626 images belonging to 5 classes.\n"
+     ]
+    }
+   ],
+   "source": [
+    "x_train=train_datagen.flow_from_directory(r'C:\\Users\\HARIHARAN\\PycharmProjects\\AI Analyzer for fitness enthusiasts\\TRAIN_SET',target_size=(64, 64),batch_size=5,color_mode='rgb',class_mode='sparse')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "id": "b99372e8",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Found 1055 images belonging to 5 classes.\n"
+     ]
+    }
+   ],
+   "source": [
+    "x_test=test_datagen.flow_from_directory(r'C:\\Users\\HARIHARAN\\PycharmProjects\\AI Analyzer for fitness enthusiasts\\TEST_SET',target_size=(64, 64),batch_size=5,color_mode='rgb',class_mode='sparse')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "id": "369a3759",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'APPLES': 0, 'BANANA': 1, 'ORANGE': 2, 'PINEAPPLE': 3, 'WATERMELON': 4}\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(x_train.class_indices)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "id": "34e6a9a1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'APPLES': 0, 'BANANA': 1, 'ORANGE': 2, 'PINEAPPLE': 3, 'WATERMELON': 4}\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(x_test.class_indices)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "60fb4276",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Counter({0: 606, 1: 445, 2: 479, 3: 621, 4: 475})"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from collections import Counter as c\n",
+    "c(x_train.labels)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "id": "873cb03c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "id": "68fce711",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import tensorflow\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "592ea328",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.models import Sequential\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "id": "79b4e01c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras import layers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "id": "55a08bac",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.layers import Dense,Flatten"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "id": "d0a91092",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.layers import Conv2D,MaxPooling2D,Dropout"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "id": "cdc87d37",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.preprocessing.image import ImageDataGenerator"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "id": "e3978b3a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model=Sequential()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "id": "9309b421",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier=Sequential()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 46,
+   "id": "a2772970",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(Conv2D(32, (3, 3), input_shape=(64, 64 ,3), activation='relu'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "id": "631f2132",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(MaxPooling2D(pool_size=(2, 2)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "id": "fe083a40",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(Conv2D(32, (3, 3), activation='relu'))\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ecee3a2f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "id": "57814bea",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(Flatten())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "id": "ac3d9ed9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(Dense(units=128, activation='relu'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "id": "e4d70e04",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.add(Dense(units=5, activation='softmax'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "id": "22e1b06b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Model: \"sequential_3\"\n",
+      "_________________________________________________________________\n",
+      " Layer (type)                Output Shape              Param #   \n",
+      "=================================================================\n",
+      " conv2d_2 (Conv2D)           (None, 62, 62, 32)        896       \n",
+      "                                                                 \n",
+      " max_pooling2d_1 (MaxPooling  (None, 31, 31, 32)       0         \n",
+      " 2D)                                                             \n",
+      "                                                                 \n",
+      " conv2d_3 (Conv2D)           (None, 29, 29, 32)        9248      \n",
+      "                                                                 \n",
+      " flatten_1 (Flatten)         (None, 26912)             0         \n",
+      "                                                                 \n",
+      " dense_2 (Dense)             (None, 128)               3444864   \n",
+      "                                                                 \n",
+      " dense_3 (Dense)             (None, 5)                 645       \n",
+      "                                                                 \n",
+      "=================================================================\n",
+      "Total params: 3,455,653\n",
+      "Trainable params: 3,455,653\n",
+      "Non-trainable params: 0\n",
+      "_________________________________________________________________\n"
+     ]
+    }
+   ],
+   "source": [
+    "classifier.summary()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 54,
+   "id": "339c611e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.compile(optimizer='adam', loss='sparse_categorical_crossentropy',metrics=['accuracy'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "id": "15adec47",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "classifier.save('nutrition.h5')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "id": "16658e73",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.models import load_model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "id": "e5975e21",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from keras.preprocessing import image"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "927e1275",
+   "metadata": {},
+   "source": [
+    "model = load_model(\"nutrition.h5\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "1b4e9443",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from flask import Flask,render_template,request"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "aefefaa6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "779829aa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "c351c98e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.models import load_model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "a30e5553",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tensorflow.keras.preprocessing import image"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "66afd15d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import requests"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "1eb84beb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "app= Flask(__name__,template_folder=\"templates\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "b5cacadf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model=load_model('nutrition.h5')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "65c56f3d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Loaded model from disk\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Loaded model from disk\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "fa368ea6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "@app.route('/')\n",
+    "def home():\n",
+    "    return render_template('homepage.html')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "0fa45f0b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "@app.route('/image1',methods=['GET','POST'])\n",
+    "def image1():\n",
+    "    return render_template(\"image.html\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "d6d6be22",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "@app.route('/predict',methods=['GET','POST'])\n",
+    "def launch():\n",
+    "    if request.method=='POST':\n",
+    "        f=request.files['file']\n",
+    "        basepath=os.path.dirname('__file__')\n",
+    "        filepath=os.path.join(basepath,\"uploads\",f.filename)\n",
+    "        f.save(filepath)\n",
+    "        \n",
+    "        img=image.load_img(filepath,target_size=(64,64))\n",
+    "        x=image.img_to_array(img)\n",
+    "        x=np.expand_dims(x,axis=0)\n",
+    "        \n",
+    "        pred=np.argmax(model.predict(x), axis=1)\n",
+    "        print(\"prediction\",pred)\n",
+    "        index=['APPLES','BANANA','ORANGE','PINEAPPLE','WATERMELON']\n",
+    "        result=str(index[pred[0]])\n",
+    "        x=result\n",
+    "        print(x)\n",
+    "        result=nutrition(result)\n",
+    "        print(result)\n",
+    "        return render_template(\"0.html\",showcase=(result),showcase1=(x))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "aa54e76d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def nutrition(index):\n",
+    "    url = \"https://calorieninjas.p.rapidapi.com/v1/nutrition\"\n",
+    "    querystring = {\"query\":index}\n",
+    "    headers = {\n",
+    "        'X-RapidAPI-Key': 'daaf576556msh5fcbc747e5cb27cp14bd10jsn07d05ab509ae',\n",
+    "    'X-RapidAPI-Host': 'calorieninjas.p.rapidapi.com'\n",
+    "    }\n",
+    "    response = requests.request(\"GET\",url,headers=headers, params=querystring)\n",
+    "    print(response.text)\n",
+    "    return response.json()['items']\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c9279917",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "if __name__ == \"__main__\":\n",
+    "    app.run(debug=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fd865a9b",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e01e1122",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "065ddea9",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
